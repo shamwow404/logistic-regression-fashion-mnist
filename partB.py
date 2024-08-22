@@ -17,8 +17,7 @@ test_data = pd.read_csv('fashion-mnist_test.csv')
 combined_data = pd.concat([train_data, test_data], ignore_index=True)
 
 
-
-# Explore the data
+### Explore the data
 #combined_data.shape
 #combined_data.head()
 #train_data.shape
@@ -26,21 +25,21 @@ combined_data = pd.concat([train_data, test_data], ignore_index=True)
 #labels.value_counts()
 
 # Showing images and data
-# Extract features and labels
-labels = combined_data.iloc[:, 0]  # Assuming the first column is the label
-features = combined_data.iloc[:, 1:]  # Rest are features
+# Extracting target and features to be used in plotting (labels, image) and to train the model
+y = combined_data.iloc[:, 0]  # 1st column label, target variable
+X = combined_data.iloc[:, 1:]  # Rest are features
 
 # Reshape and display some sample images
 import numpy as np
 import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 2))
 for idx in range(5):
-    image = features.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
-    label = labels.iloc[idx]
+    image = X.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
+    label = y.iloc[idx]
     plt.subplot(1, 5, idx + 1)
     plt.imshow(image, cmap=plt.cm.gray)
     plt.title(f'Label: {label}', fontsize=10)
-    plt.axis('off')  # Hide axis for better visualization
+    plt.axis('off') 
 
 plt.show()
 
@@ -51,9 +50,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 
-#Extract features and labels
-y = combined_data.iloc[:, 0]  # first column is the label
-X = combined_data.iloc[:, 1:]  # Rest are features
 
 # Normalize feature values
 X = X / 255.0  # Normalize pixel values to [0, 1]
@@ -62,7 +58,10 @@ X = X / 255.0  # Normalize pixel values to [0, 1]
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=0)
 
 # Initialize the logistic regression model
-lr = LogisticRegression(solver='lbfgs', max_iter=200)
+# increase regularization (lower values of c is stronger reg)
+# change solver from lbfgs to saga to deal with large dataset size and not reaching convergence within 300 iterations
+lr = LogisticRegression(solver='saga', max_iter=300, C=0.1) 
+
 
 # Fit the model
 lr.fit(X_train, y_train)
@@ -80,4 +79,39 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 # Print confusion matrix
 print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
         
+## Visualise
+#Display correct predictions
+images_and_prediction = list(zip(combined_data, lr.predict(X)))
+
+plt.figure(figsize=(10,2))
+for idx in range(5):
+    image = X.iloc[idx].values.reshape(28, 28) 
+    prediction = lr.predict(X)[idx]
+    plt.subplot(1,5,idx+1)
+    plt.axis("off")
+    plt.imshow(np.array(image), cmap=plt.cm.gray_r, interpolation='nearest')
+    plt.title('Prediction: %i' % int(prediction))
+plt.show
+
+## Display Misclassified images With predicted labels
+index = 0
+misclassifiedIndexes = []
+for label, predict in zip(y_test, y_pred):
+    if label != predict:
+        misclassifiedIndexes.append(index)
+    index +=1
+    
+#missclassifiedIndexes[:5]
+#y_pred
+#np.array(y_test)[:5]
+
+
+plt.figure(figsize=(20,3))
+for plotIndex, badIndex in enumerate(misclassifiedIndexes[0:5]):
+    plt.subplot(1, 5, plotIndex + 1)
+    plt.axis("off")
+    plt.imshow(np.array(X_test.iloc[badIndex, :]).reshape(28, 28), cmap=plt.cm.
+gray, interpolation='nearest')
+    plt.title('Predicted: {}, Actual: {}'.format(y_pred[badIndex], np.
+array(y_test)[badIndex]), fontsize = 20)
 
