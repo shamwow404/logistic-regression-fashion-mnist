@@ -8,6 +8,7 @@ Created on Mon Aug 19 17:40:07 2024
 
 ## PRML Assignment 1 Part B logistic regression using FASHION MNIST
 
+## Import the data from csv
 import pandas as pd
 train_data = pd.read_csv('fashion-mnist_train.csv')
 test_data = pd.read_csv('fashion-mnist_test.csv')
@@ -94,6 +95,7 @@ for idx in range(5):
 plt.show
 
 ## Display Misclassified images With predicted labels
+# Create the dataframe
 index = 0
 misclassifiedIndexes = []
 for label, predict in zip(y_test, y_pred):
@@ -105,7 +107,7 @@ for label, predict in zip(y_test, y_pred):
 #y_pred
 #np.array(y_test)[:5]
 
-
+# Plot
 plt.figure(figsize=(20,3))
 for plotIndex, badIndex in enumerate(misclassifiedIndexes[0:5]):
     plt.subplot(1, 5, plotIndex + 1)
