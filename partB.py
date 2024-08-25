@@ -7,8 +7,7 @@ Created on Mon Aug 19 17:40:07 2024
 """
 
 ## PRML Assignment 1 Part B logistic regression using FASHION MNIST
-
-## Import the data from csv
+# Import dataset from csv files
 import pandas as pd
 train_data = pd.read_csv('fashion-mnist_train.csv')
 test_data = pd.read_csv('fashion-mnist_test.csv')
@@ -23,7 +22,7 @@ combined_data = pd.concat([train_data, test_data], ignore_index=True)
 #combined_data.head()
 #train_data.shape
 #test_data.shape
-#labels.value_counts()
+
 
 # Showing images and data
 # Extracting target and features to be used in plotting (labels, image) and to train the model
@@ -81,21 +80,23 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
         
 ## Visualise
-#Display correct predictions
+
+# Display correct predictions
 images_and_prediction = list(zip(combined_data, lr.predict(X)))
 
-plt.figure(figsize=(10,2))
+plt.figure(figsize=(10, 2))
 for idx in range(5):
-    image = X.iloc[idx].values.reshape(28, 28) 
-    prediction = lr.predict(X)[idx]
-    plt.subplot(1,5,idx+1)
-    plt.axis("off")
-    plt.imshow(np.array(image), cmap=plt.cm.gray_r, interpolation='nearest')
-    plt.title('Prediction: %i' % int(prediction))
-plt.show
+    image = X.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
+    label = lr.predict(X)[idx]  # Predict the label for each image
+    plt.subplot(1, 5, idx + 1)
+    plt.imshow(image, cmap=plt.cm.gray, interpolation='nearest')
+    plt.title(f'Prediction: {label}', fontsize=10)  # Use the 'label' variable for the prediction
+    plt.axis('off') 
+
+plt.show()
+
 
 ## Display Misclassified images With predicted labels
-# Create the dataframe
 index = 0
 misclassifiedIndexes = []
 for label, predict in zip(y_test, y_pred):
@@ -103,11 +104,10 @@ for label, predict in zip(y_test, y_pred):
         misclassifiedIndexes.append(index)
     index +=1
     
-#missclassifiedIndexes[:5]
 #y_pred
 #np.array(y_test)[:5]
 
-# Plot
+
 plt.figure(figsize=(20,3))
 for plotIndex, badIndex in enumerate(misclassifiedIndexes[0:5]):
     plt.subplot(1, 5, plotIndex + 1)
@@ -116,4 +116,26 @@ for plotIndex, badIndex in enumerate(misclassifiedIndexes[0:5]):
 gray, interpolation='nearest')
     plt.title('Predicted: {}, Actual: {}'.format(y_pred[badIndex], np.
 array(y_test)[badIndex]), fontsize = 20)
+
+## Saving the model
+import pickle
+with open('logistic_regression_model.pkl', 'wb') as file:
+    pickle.dump(lr, file)
+    
+## Loading the model later
+import pickle
+
+with open('logistic_regression_model.pkl', 'rb') as file:
+    loaded_model = pickle.load(file)
+
+
+# Verify predictions are the same
+y_pred_loaded = loaded_model.predict(X_test)
+
+# Optionally, you can print the accuracy or classification report again
+loaded_score = loaded_model.score(X_test, y_test)
+print(f'Accuracy of loaded model: {loaded_score:.4f}')
+print(f'Accuracy of original model: {score:.4f}')
+
+# If the accuracy matches the original, the model was saved and loaded correctly
 
