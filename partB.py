@@ -12,36 +12,43 @@ import pandas as pd
 train_data = pd.read_csv('fashion-mnist_train.csv')
 test_data = pd.read_csv('fashion-mnist_test.csv')
 # As the data is already split for test and train, 
-# Concatenate the two DataFrames (just to observe the data as a whole, 
-#and for future convenience normalising data
-combined_data = pd.concat([train_data, test_data], ignore_index=True)
 
-
-### Explore the data
-#combined_data.shape
-#combined_data.head()
-#train_data.shape
-#test_data.shape
 
 
 # Showing images and data
 # Extracting target and features to be used in plotting (labels, image) and to train the model
-y = combined_data.iloc[:, 0]  # 1st column label, target variable
-X = combined_data.iloc[:, 1:]  # Rest are features
+y_train = train_data.iloc[:, 0] 
+X_train = train_data.iloc[:, 1:] 
+
+y_test = test_data.iloc[:, 0]  # 1st column label, target variable
+X_test = test_data.iloc[:, 1:] 
+
+
 
 # Reshape and display some sample images
 import numpy as np
 import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 2))
 for idx in range(5):
-    image = X.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
-    label = y.iloc[idx]
+    image = X_train.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
+    label = y_train.iloc[idx]
     plt.subplot(1, 5, idx + 1)
     plt.imshow(image, cmap=plt.cm.gray)
     plt.title(f'Label: {label}', fontsize=10)
     plt.axis('off') 
 
 plt.show()
+
+
+## Show correlaltion matrix
+##correlation_matrix = test_data.corr()
+
+# Visualize the correlation matrix
+##import seaborn as sns
+##plt.figure(figsize=(12, 8))
+##sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap='coolwarm', square=True, linewidths=.5)
+##plt.title("Correlation Matrix of Features")
+##plt.show()
 
 
 ## Building the logistic regregression model to classify the images
@@ -52,16 +59,14 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 
 # Normalize feature values
-X = X / 255.0  # Normalize pixel values to [0, 1]
+X_train = X_train / 255.0  
+X_test =  X_test / 255.0  # Normalize pixel values to [0, 1]
 
-# Split data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=0)
 
 # Initialize the logistic regression model
 # increase regularization (lower values of c is stronger reg)
 # change solver from lbfgs to saga to deal with large dataset size and not reaching convergence within 300 iterations
 lr = LogisticRegression(solver='saga', max_iter=300, C=0.1) 
-
 
 # Fit the model
 lr.fit(X_train, y_train)
@@ -104,6 +109,7 @@ for label, predict in zip(y_test, y_pred):
         misclassifiedIndexes.append(index)
     index +=1
     
+#missclassifiedIndexes[:5]
 #y_pred
 #np.array(y_test)[:5]
 
@@ -137,5 +143,6 @@ loaded_score = loaded_model.score(X_test, y_test)
 print(f'Accuracy of loaded model: {loaded_score:.4f}')
 print(f'Accuracy of original model: {score:.4f}')
 
+# If the accuracy matches the original, the model was saved and loaded correctly
 # If the accuracy matches the original, the model was saved and loaded correctly
 
