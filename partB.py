@@ -86,19 +86,21 @@ print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
         
 ## Visualise
 
+
 # Display correct predictions
-images_and_prediction = list(zip(combined_data, lr.predict(X)))
+predictions = lr.predict(X_test)  # Predict the labels for all images
 
 plt.figure(figsize=(10, 2))
 for idx in range(5):
-    image = X.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
-    label = lr.predict(X)[idx]  # Predict the label for each image
+    image = X_test.iloc[idx].values.reshape(28, 28)  # Reshape the flat image to 28x28
+    label = predictions[idx]  # Get the predicted label for each image
     plt.subplot(1, 5, idx + 1)
     plt.imshow(image, cmap=plt.cm.gray, interpolation='nearest')
-    plt.title(f'Prediction: {label}', fontsize=10)  # Use the 'label' variable for the prediction
+    plt.title(f'Prediction: {label}', fontsize=10)  # Display the prediction
     plt.axis('off') 
 
 plt.show()
+
 
 
 ## Display Misclassified images With predicted labels
@@ -140,9 +142,11 @@ y_pred_loaded = loaded_model.predict(X_test)
 
 # Optionally, you can print the accuracy or classification report again
 loaded_score = loaded_model.score(X_test, y_test)
-print(f'Accuracy of loaded model: {loaded_score:.4f}')
-print(f'Accuracy of original model: {score:.4f}')
+#print(f'Accuracy of loaded model: {loaded_score:.4f}')
+#print(f'Accuracy of original model: {score:.4f}')
 
-# If the accuracy matches the original, the model was saved and loaded correctly
+if loaded_score == score:
+    print("Model Saved correctly!")
+
 # If the accuracy matches the original, the model was saved and loaded correctly
 
