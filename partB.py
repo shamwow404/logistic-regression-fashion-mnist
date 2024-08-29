@@ -40,8 +40,13 @@ for idx in range(5):
     # Extract and reshape the image data again
     image = X_train.iloc[idx].values.reshape(28, 28)
     print(f"Matrix for Image {idx + 1} (Label: {y_train.iloc[idx]}):\n")
-    print(image)  # Display the pixel values as a matrix
-    print("\n" + "="*60 + "\n")  # Divider between matrices for clarity
+    
+    # Format and print each row of the matrix
+    for row in image:
+        # Print each value with a fixed 
+        print(" ".join(f"{int(val):3}" for val in row))
+    
+    print("\n" + "="*60 + "\n")  # Divider between matrices 
 
 ## Building the logistic regregression model to classify the images
 
@@ -127,6 +132,5 @@ loaded_score = loaded_model.score(X_test, y_test)
 
 if loaded_score == score:
     print("Model Saved correctly!")
-
 
 
