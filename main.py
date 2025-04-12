@@ -3,10 +3,10 @@
 """
 Created on Mon Aug 19 17:40:07 2024
 
-@author: Sharmelle-Leonie Connell u3195672
+@author: Sham
 """
 
-## PRML Assignment 1 Part B logistic regression using FASHION MNIST
+## Logistic regression using FASHION MNIST
 
 # Import dataset from csv files
 import pandas as pd
