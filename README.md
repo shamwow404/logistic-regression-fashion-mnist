@@ -18,7 +18,7 @@ Place the downloaded files (`fashion-mnist_train.csv` and `fashion-mnist_test.cs
 
 - Loads Fashion-MNIST CSV datasets
 - Visualizes sample images and their pixel matrices
-- Trains a **Logistic Regression** model with normalization and regularization
+- Trains a **Logistic Regression** model with normalisation and regularisation
 - Evaluates model using accuracy, classification report, and confusion matrix
 - Displays correct and misclassified predictions
 - Saves and reloads the trained model with `pickle`
@@ -75,7 +75,7 @@ The script automatically tests that loading it back gives identical predictions.
 
 - To adjust the model’s performance, change the **regularization strength** by modifying the `C` parameter:
   ```python
-  lr = LogisticRegression(solver='saga', max_iter=300, C=0.1)  # Lower C = more regularization
+  lr = LogisticRegression(solver='saga', max_iter=300, C=0.1)  # Lower C = more regularisation
 
   ```
   Try different values like C=1.0, C=0.01, or C=0.001 and re-run the script.
